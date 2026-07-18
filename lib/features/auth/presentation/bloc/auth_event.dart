@@ -8,19 +8,22 @@ sealed class AuthEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-/// Подія старту додатка — перевірка наявності активної сесії
 class AppStarted extends AuthEvent {}
 
-/// Подія спроби входу користувача
+/// Подія запиту автентифікації адміністратора
 class SignInRequested extends AuthEvent {
+  final String serverUrl;
   final String email;
   final String password;
 
-  const SignInRequested({required this.email, required this.password});
+  const SignInRequested({
+    required this.serverUrl,
+    required this.email,
+    required this.password,
+  });
 
   @override
-  List<Object?> get props => [email, password];
+  List<Object?> get props => [serverUrl, email, password];
 }
 
-/// Подія виходу з системи або інвалідації токена (401 Error)
 class LogoutRequested extends AuthEvent {}

@@ -50,20 +50,35 @@ class AppNavigator extends StatelessWidget {
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
         return Navigator(
-          key: const ValueKey('root_declarative_navigator'),
-          onDidRemovePage: (page) {},
+          key: GlobalKey<NavigatorState>(), // Забезпечує цілісність стану при перебудові
+          onPopPage: (route, result) => route.didPop(result),
           pages: [
-            // Патерн Еквівалентності Стану та Сторінки (Morphed Page Mapping)
+            // 1. Етап холодного старту додатка та перевірки SecureStorage
             if (state is AuthInitializing)
               const MaterialPage(
                 key: ValueKey('SplashPage'),
-                child: SplashPage(),
+                child: Scaffold(
+                  body: Center(child: CircularProgressIndicator(color: Colors.deepOrange)),
+                ),
               ),
+
+            // 2. Еталонний оборонний рубіж: Будь-яка варіація Unauthenticated
+            // (чиста форма, помилка 404, неправильний пароль або наслідки бану)
             if (state is Unauthenticated)
               MaterialPage(
                 key: const ValueKey('LoginPage'),
                 child: LoginPage(errorMessage: state.errorMessage),
               ),
+
+            // 3. Стан завантаження мережевого запиту. 
+            // Клієнт ОДНОЧАСНО утримує LoginPage на екрані, поки крутиться лоадер
+            if (state is AuthLoading)
+              const MaterialPage(
+                key: ValueKey('LoginPageLoading'),
+                child: LoginPage(),
+              ),
+
+            // 4. Успішний вхід у систему — перехід до моніторингу заліза
             if (state is Authenticated)
               const MaterialPage(
                 key: ValueKey('DashboardPage'),

@@ -1,4 +1,3 @@
-// lib/core/network/dio_client.dart
 import 'package:dio/dio.dart';
 
 class DioClient {
@@ -11,34 +10,22 @@ class DioClient {
       ..responseType = ResponseType.json;
   }
 
-  /// Публічний доступ до екземпляра для реєстрації інтерцепторів
   Dio get instance => _dio;
 
-  // Уніфікований метод для безпечного виконання GET запитів
-  Future<Response<T>> get<T>(
-    String path, {
-    Map<String, dynamic>? queryParameters,
-    Options? options,
-  }) async {
-    return await _dio.get<T>(
-      path,
-      queryParameters: queryParameters,
-      options: options,
-    );
+  void updateBaseUrl(String url) {
+    var formattedUrl = url.trim();
+    if (!formattedUrl.startsWith('http://') && !formattedUrl.startsWith('https://')) {
+      formattedUrl = 'http://$formattedUrl';
+    }
+    _dio.options.baseUrl = formattedUrl;
   }
 
-  // Уніфікований метод для POST запитів (Автентифікація, команди G-коду)
-  Future<Response<T>> post<T>(
-    String path, {
-    dynamic data,
-    Map<String, dynamic>? queryParameters,
-    Options? options,
-  }) async {
-    return await _dio.post<T>(
-      path,
-      data: data,
-      queryParameters: queryParameters,
-      options: options,
-    );
+  // Додаємо цей метод для GET запитів, щоб не смикати instance щоразу:
+  Future<Response<T>> get<T>(String path, {Map<String, dynamic>? queryParameters}) async {
+    return await _dio.get<T>(path, queryParameters: queryParameters);
+  }
+
+  Future<Response<T>> post<T>(String path, {dynamic data}) async {
+    return await _dio.post<T>(path, data: data);
   }
 }

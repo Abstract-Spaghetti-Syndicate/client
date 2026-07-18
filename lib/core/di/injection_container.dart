@@ -15,6 +15,14 @@ import 'package:printer_client/features/auth/domain/repositories/auth_repository
 import 'package:printer_client/features/auth/domain/usecases/sign_in_usecase.dart';
 import 'package:printer_client/features/auth/presentation/bloc/auth_bloc.dart';
 
+import '../../features/printer/data/repositories/printer_repository_impl.dart';
+import '../../features/printer/domain/repositories/printer_repository.dart';
+import '../../features/printer/presentation/bloc/printer_bloc.dart';
+
+import '../../features/filament/data/repositories/filament_repository_impl.dart';
+import '../../features/filament/domain/repositories/filament_repository.dart';
+import '../../features/filament/presentation/bloc/filament_bloc.dart';
+
 final sl = GetIt.instance;
 
 /// Єдина точка збору всієї архітектури клієнта Filamentary.
@@ -56,6 +64,14 @@ Future<void> initDependencies() async {
     () => AuthRepositoryImpl(sl(), sl()),
   );
 
+  sl.registerLazySingleton<PrinterRepository>(
+    () => PrinterRepositoryImpl(sl(), sl())
+  );
+
+  sl.registerLazySingleton<FilamentRepository>(
+    () => FilamentRepositoryImpl(sl())
+  );
+
   // ==========================================================================
   // 5. USE CASES (Чисті сценарії бізнес-логіки)
   // ==========================================================================
@@ -71,4 +87,8 @@ Future<void> initDependencies() async {
         localDataSource: sl(),
         eventBus: sl(),
       ));
+  
+  sl.registerFactory(() => PrinterBloc(sl()));
+
+  sl.registerFactory(() => FilamentBloc(sl()));
 }

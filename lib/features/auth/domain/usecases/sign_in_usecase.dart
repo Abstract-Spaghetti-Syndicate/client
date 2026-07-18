@@ -17,7 +17,7 @@ class SignInUseCase {
     }
 
     if (credentials.password.length < 6) {
-      return (ServerUnreachableFailure('Пароль занадто короткий на рівні правил безпеки.'), null);
+      return (const ServerUnreachableFailure('Пароль занадто короткий на рівні правил безпеки.'), null);
     }
 
     // Передаємо чисту сутність далі по конвеєру до шару даних

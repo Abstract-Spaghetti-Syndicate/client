@@ -15,6 +15,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  late final TextEditingController _serverController;
   late final TextEditingController _emailController;
   late final TextEditingController _passwordController;
   final _formKey = GlobalKey<FormState>();
@@ -22,15 +23,18 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
+    _serverController = TextEditingController();
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
   }
 
   @override
   void dispose() {
-    // Безжально очищаємо пам'ять від чутливих даних користувача
+    // Гарантований захист від витоків пам'яті в Heap
+    _serverController.clear();
     _emailController.clear();
     _passwordController.clear();
+    _serverController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
@@ -41,7 +45,6 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       body: BlocBuilder<AuthBloc, AuthState>(
         builder: (context, state) {
-          // Визначаємо, чи перебуває система в стані очікування відповіді від сервера
           final isLoading = state is AuthLoading;
 
           return Center(
@@ -68,10 +71,29 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       const SizedBox(height: 32),
                       
-                      // Поле введення Email
+                      // Нове інженерне поле: Адреса self-hosted сервера
+                      TextFormField(
+                        controller: _serverController,
+                        enabled: !isLoading,
+                        decoration: const InputDecoration(
+                          labelText: 'Адреса сервера (IP або Домен)',
+                          border: OutlineInputBorder(),
+                          prefixIcon: Icon(Icons.dns_rounded),
+                          hintText: '192.168.1.100:8000 або printer.local',
+                        ),
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'Будь ласка, введіть адресу сервера';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      
+                      // Поле Email
                       TextFormField(
                         controller: _emailController,
-                        enabled: !isLoading, // Блокуємо поле під час завантаження
+                        enabled: !isLoading,
                         decoration: const InputDecoration(
                           labelText: 'Email',
                           border: OutlineInputBorder(),
@@ -90,10 +112,10 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       const SizedBox(height: 16),
                       
-                      // Поле введення Паролю
+                      // Поле Пароль
                       TextFormField(
                         controller: _passwordController,
-                        enabled: !isLoading, // Блокуємо поле під час завантаження
+                        enabled: !isLoading,
                         decoration: const InputDecoration(
                           labelText: 'Пароль',
                           border: OutlineInputBorder(),
@@ -111,7 +133,7 @@ class _LoginPageState extends State<LoginPage> {
                         },
                       ),
                       
-                      // Динамічний вивід помилок автентифікації
+                      // Динамічний вивід помилок
                       if (state is Unauthenticated && state.errorMessage != null) ...[
                         const SizedBox(height: 16),
                         Text(
@@ -122,15 +144,15 @@ class _LoginPageState extends State<LoginPage> {
                       ],
                       const SizedBox(height: 24),
                       
-                      // Кнопка відправки форми
+                      // Кнопка Увійти
                       ElevatedButton(
-                        // Якщо йде завантаження — передаємо null, що робить кнопку disabled на рівні ОС
                         onPressed: isLoading 
                             ? null 
                             : () {
                                 if (_formKey.currentState?.validate() ?? false) {
                                   context.read<AuthBloc>().add(
                                     SignInRequested(
+                                      serverUrl: _serverController.text,
                                       email: _emailController.text,
                                       password: _passwordController.text,
                                     ),
@@ -138,7 +160,7 @@ class _LoginPageState extends State<LoginPage> {
                                 }
                               },
                         style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.only(top: 16, bottom: 16), // Виправлений const-відступ
+                          padding: const EdgeInsets.only(top: 16, bottom: 16),
                           backgroundColor: Colors.deepOrange,
                           foregroundColor: Colors.white,
                           disabledBackgroundColor: Colors.deepOrange.withValues(alpha: 0.6),

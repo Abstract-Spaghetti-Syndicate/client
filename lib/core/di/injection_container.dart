@@ -19,9 +19,23 @@ import '../../features/printer/data/repositories/printer_repository_impl.dart';
 import '../../features/printer/domain/repositories/printer_repository.dart';
 import '../../features/printer/presentation/bloc/printer_bloc.dart';
 
-import '../../features/filament/data/repositories/filament_repository_impl.dart';
-import '../../features/filament/domain/repositories/filament_repository.dart';
-import '../../features/filament/presentation/bloc/filament_bloc.dart';
+import '../../features/storage/data/repositories/filament_repository_impl.dart';
+import '../../features/storage/domain/repositories/filament_repository.dart';
+import '../../features/storage/presentation/bloc/filament/filament_bloc.dart';
+
+import '../../features/storage/data/repositories/vendor_repository_impl.dart';
+import '../../features/storage/domain/repositories/vendor_repository.dart';
+import '../../features/storage/presentation/bloc/vendor/vendor_bloc.dart';
+
+import '../../features/storage/data/repositories/filament_tab_repository_impl.dart';
+import '../../features/storage/domain/repositories/filament_tab_repository.dart';
+import '../../features/storage/presentation/bloc/filament_tab/filament_tab_bloc.dart';
+
+import '../../features/storage/data/repositories/location_repository_impl.dart';
+import '../../features/storage/domain/repositories/location_repository.dart';
+import '../../features/storage/presentation/bloc/location/location_bloc.dart';
+
+// Всередині функції init():
 
 final sl = GetIt.instance;
 
@@ -72,6 +86,18 @@ Future<void> initDependencies() async {
     () => FilamentRepositoryImpl(sl())
   );
 
+  sl.registerLazySingleton<VendorRepository>(
+    () => VendorRepositoryImpl(sl())
+  );
+
+  sl.registerLazySingleton<FilamentTabRepository>(
+    () => FilamentTabRepositoryImpl(sl())
+  );
+
+  sl.registerLazySingleton<LocationRepository>(
+    () => LocationRepositoryImpl(sl())
+  );
+
   // ==========================================================================
   // 5. USE CASES (Чисті сценарії бізнес-логіки)
   // ==========================================================================
@@ -91,4 +117,10 @@ Future<void> initDependencies() async {
   sl.registerFactory(() => PrinterBloc(sl()));
 
   sl.registerFactory(() => FilamentBloc(sl()));
+
+  sl.registerFactory(() => VendorBloc(sl()));
+
+  sl.registerFactory(() => FilamentTabBloc(sl()));
+
+  sl.registerFactory(() => LocationBloc(sl()));
 }

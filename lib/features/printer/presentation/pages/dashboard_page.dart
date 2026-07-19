@@ -6,7 +6,7 @@ import '../../../../core/presentation/widgets/responsive_layout.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
 import '../../../auth/presentation/bloc/auth_event.dart';
 import '../../../auth/presentation/bloc/auth_state.dart';
-import '../../../filament/presentation/pages/filament_page.dart'; // Нова фіча
+import '../../../storage/presentation/pages/filament_page.dart'; // Нова фіча
 import '../bloc/printer_bloc.dart';
 import '../bloc/printer_event.dart';
 import '../bloc/printer_state.dart';

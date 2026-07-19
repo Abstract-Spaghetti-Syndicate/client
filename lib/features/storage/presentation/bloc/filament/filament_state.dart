@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import '../../domain/entities/spool.dart';
+import '../../../domain/entities/spool.dart';
 
 abstract class FilamentState extends Equatable {
   const FilamentState();

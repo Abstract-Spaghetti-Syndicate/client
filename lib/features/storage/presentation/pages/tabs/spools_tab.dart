@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../core/di/injection_container.dart';
-import '../bloc/filament_bloc.dart';
-import '../bloc/filament_event.dart';
-import '../bloc/filament_state.dart';
-import '../../domain/entities/spool.dart';
+import '../../../../../core/di/injection_container.dart';
+import '../../bloc/filament/filament_bloc.dart';
+import '../../bloc/filament/filament_event.dart';
+import '../../bloc/filament/filament_state.dart';
+import '../../../domain/entities/spool.dart';
 
-class FilamentPage extends StatelessWidget {
-  const FilamentPage({super.key});
+class SpoolsTab extends StatelessWidget {
+  const SpoolsTab({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<FilamentBloc>(
       create: (context) => sl<FilamentBloc>()..add(FetchFilaments()),
       child: Scaffold(
+        backgroundColor: Colors.transparent,
         body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: BlocBuilder<FilamentBloc, FilamentState>(
@@ -27,7 +28,7 @@ class FilamentPage extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(state.message, style: const TextStyle(color: Colors.red)),
+                      Text(state.message, style: const TextStyle(color: Colors.red, fontSize: 14)),
                       const SizedBox(height: 16),
                       ElevatedButton(
                         onPressed: () => context.read<FilamentBloc>().add(FetchFilaments()),
@@ -43,7 +44,8 @@ class FilamentPage extends StatelessWidget {
                   return const Center(
                     child: Text(
                       'У вашій базі немає жодної активної котушки.',
-                      style: TextStyle(color: Colors.white54),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.black54, fontSize: 14),
                     ),
                   );
                 }
@@ -87,8 +89,12 @@ class FilamentPage extends StatelessWidget {
     }
 
     return Card(
-      color: Colors.grey.shade900,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      color: Colors.grey.shade100,
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: Colors.grey.shade300, width: 1),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(14.0),
         child: Column(
@@ -103,17 +109,17 @@ class FilamentPage extends StatelessWidget {
                   children: [
                     Text(
                       spool.vendor.toUpperCase(),
-                      style: const TextStyle(color: Colors.white54, fontSize: 10, fontWeight: FontWeight.bold),
+                      style: TextStyle(color: Colors.grey.shade600, fontSize: 10, fontWeight: FontWeight.bold),
                     ),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                       decoration: BoxDecoration(
-                        color: Colors.blue.shade900.withValues(alpha: 0.4),
+                        color: Colors.blue.shade100,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
                         spool.material,
-                        style: TextStyle(color: Colors.blue.shade300, fontSize: 9, fontWeight: FontWeight.bold),
+                        style: TextStyle(color: Colors.blue.shade800, fontSize: 9, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ],
@@ -128,7 +134,7 @@ class FilamentPage extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: markerColor,
                           shape: BoxShape.circle,
-                          border: Border.all(color: Colors.grey.shade700, width: 1),
+                          border: Border.all(color: Colors.grey.shade400, width: 1),
                         ),
                       ),
                       const SizedBox(width: 6),
@@ -136,7 +142,7 @@ class FilamentPage extends StatelessWidget {
                     Expanded(
                       child: Text(
                         spool.name,
-                        style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold),
+                        style: const TextStyle(color: Colors.black87, fontSize: 13, fontWeight: FontWeight.bold),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -148,13 +154,12 @@ class FilamentPage extends StatelessWidget {
             Column(
               children: [
                 Row(
-                  // ВИПРАВЛЕНО: замінено MainAxisAlignment.between на spaceBetween на 154 рядку
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('Залишилося:', style: TextStyle(color: Colors.white38, fontSize: 11)),
+                    const Text('Залишилося:', style: TextStyle(color: Colors.black54, fontSize: 11)),
                     Text(
                       '${spool.remainingWeight.toStringAsFixed(0)}г / ${spool.initialWeight.toStringAsFixed(0)}г',
-                      style: const TextStyle(color: Colors.greenAccent, fontSize: 11, fontWeight: FontWeight.bold, fontFamily: 'mono'),
+                      style: TextStyle(color: Colors.green.shade700, fontSize: 11, fontWeight: FontWeight.bold, fontFamily: 'mono'),
                     ),
                   ],
                 ),
@@ -163,8 +168,8 @@ class FilamentPage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(4),
                   child: LinearProgressIndicator(
                     value: spool.remainingPercentage / 100,
-                    backgroundColor: Colors.grey.shade800,
-                    valueColor: const AlwaysStoppedAnimation<Color>(Colors.greenAccent),
+                    backgroundColor: Colors.grey.shade300,
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.green.shade600),
                     minHeight: 6,
                   ),
                 ),

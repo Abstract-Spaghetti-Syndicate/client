@@ -1,4 +1,4 @@
-import '../../domain/entities/spool.dart';
+import '../../domain/entities/spool_entity.dart';
 
 class SpoolModel extends Spool {
   const SpoolModel({

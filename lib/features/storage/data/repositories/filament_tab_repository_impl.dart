@@ -2,8 +2,8 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/network/dio_client.dart';
-import '../../domain/entities/filament.dart';
-import '../../domain/repositories/filament_tab_repository.dart';
+import '../../domain/entities/filament_entity.dart';
+import '../../domain/repositories/spool_repository.dart';
 import '../models/filament_model.dart';
 
 class FilamentTabRepositoryImpl implements FilamentTabRepository {

@@ -2,7 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/network/dio_client.dart';
-import '../../domain/entities/vendor.dart';
+import '../../domain/entities/vendor_entity.dart';
 import '../../domain/repositories/vendor_repository.dart';
 import '../models/vendor_model.dart';
 

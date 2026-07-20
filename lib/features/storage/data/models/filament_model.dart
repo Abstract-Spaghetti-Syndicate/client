@@ -1,31 +1,56 @@
-import '../../domain/entities/filament.dart';
+import 'package:printer_client/core/database/app_database.dart';
+import '../../domain/entities/filament_entity.dart';
 
 class FilamentModel extends FilamentEntity {
   const FilamentModel({
     required super.id,
+    required super.vendorId,
     required super.name,
     required super.material,
-    super.vendorId,
-    super.diameter,
-    super.density,
-    super.colorHex,
-    super.spoolWeight,
-    super.peakExtruderTemp,
-    super.peakBedTemp,
+    required super.colorHex,
   });
 
+  // Конвертація з Drift структури в Entity
+  factory FilamentModel.fromDrift(FilamentTableData data) {
+    return FilamentModel(
+      id: data.id,
+      vendorId: data.vendorId,
+      name: data.name,
+      material: data.material,
+      colorHex: data.colorHex,
+    );
+  }
+
+  // Конвертація з JSON (від сервера) в Entity
   factory FilamentModel.fromJson(Map<String, dynamic> json) {
     return FilamentModel(
-      id: json['id'] as int,
-      name: json['name'] ?? 'Unknown Filament',
-      material: json['material'] ?? 'PLA',
-      vendorId: json['vendor_id'] as int?,
-      diameter: (json['diameter'] as num?)?.toDouble() ?? 1.75,
-      density: (json['density'] as num?)?.toDouble(),
-      colorHex: json['color_hex'] as String?,
-      spoolWeight: (json['spool_weight'] as num?)?.toInt(), // Безпечний парсинг в int
-      peakExtruderTemp: (json['ext_temp'] as num?)?.toInt(), // ВИПРАВЛЕНО: тепер double безпечно стане int
-      peakBedTemp: (json['bed_temp'] as num?)?.toInt(),     // ВИПРАВЛЕНО: тепер double безпечно стане int
+      id: json['id'] as String,
+      vendorId: json['vendor_id'] as String,
+      name: json['name'] as String,
+      material: json['material'] as String,
+      colorHex: json['color_hex'] as String,
     );
+  }
+
+  // Конвертація Entity у рядок для збереження в Drift
+  FilamentTableData toDriftData() {
+    return FilamentTableData(
+      id: id,
+      vendorId: vendorId,
+      name: name,
+      material: material,
+      colorHex: colorHex,
+    );
+  }
+
+  // Конвертація в JSON для відправки на сервер
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'vendor_id': vendorId,
+      'name': name,
+      'material': material,
+      'color_hex': colorHex,
+    };
   }
 }

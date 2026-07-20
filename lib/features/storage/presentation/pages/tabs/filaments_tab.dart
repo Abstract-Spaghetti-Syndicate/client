@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/di/injection_container.dart';
-import '../../bloc/filament_tab/filament_tab_bloc.dart';
-import '../../bloc/filament_tab/filament_tab_event.dart';
-import '../../bloc/filament_tab/filament_tab_state.dart';
-import '../../../domain/entities/filament.dart';
+import '../../bloc/spool/spool_bloc.dart';
+import '../../bloc/spool/spool_event.dart';
+import '../../bloc/spool/spool_state.dart';
+import '../../../domain/entities/filament_entity.dart';
 
 class FilamentsTab extends StatelessWidget {
   const FilamentsTab({super.key});

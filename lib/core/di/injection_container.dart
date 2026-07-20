@@ -28,8 +28,8 @@ import '../../features/storage/domain/repositories/vendor_repository.dart';
 import '../../features/storage/presentation/bloc/vendor/vendor_bloc.dart';
 
 import '../../features/storage/data/repositories/filament_tab_repository_impl.dart';
-import '../../features/storage/domain/repositories/filament_tab_repository.dart';
-import '../../features/storage/presentation/bloc/filament_tab/filament_tab_bloc.dart';
+import '../../features/storage/domain/repositories/spool_repository.dart';
+import '../../features/storage/presentation/bloc/spool/spool_bloc.dart';
 
 import '../../features/storage/data/repositories/location_repository_impl.dart';
 import '../../features/storage/domain/repositories/location_repository.dart';

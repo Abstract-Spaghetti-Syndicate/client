@@ -4,7 +4,7 @@ import '../../../../../core/di/injection_container.dart';
 import '../../bloc/vendor/vendor_bloc.dart';
 import '../../bloc/vendor/vendor_event.dart';
 import '../../bloc/vendor/vendor_state.dart';
-import '../../../domain/entities/vendor.dart';
+import '../../../domain/entities/vendor_entity.dart';
 
 class VendorsTab extends StatelessWidget {
   const VendorsTab({super.key});

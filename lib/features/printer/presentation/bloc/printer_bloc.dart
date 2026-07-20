@@ -1,36 +1,22 @@
+// lib/features/printer/presentation/bloc/printer_bloc.dart
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../domain/entities/printer_status.dart';
-import '../../domain/repositories/printer_repository.dart';
+import '../../domain/usecases/get_printer_status.dart';
+import 'package:printer_client/core/usecases/usecase.dart';
 import 'printer_event.dart';
 import 'printer_state.dart';
 
 class PrinterBloc extends Bloc<PrinterEvent, PrinterState> {
-  final PrinterRepository _repository;
+  final GetPrinterStatus getPrinterStatus;
 
-  PrinterBloc(this._repository) : super(PrinterInitial()) {
-    on<FetchPrinterStatus>(_onFetchPrinterStatus);
-  }
-
-  Future<void> _onFetchPrinterStatus(
-    FetchPrinterStatus event,
-    Emitter<PrinterState> emit,
-  ) async {
-    // Запам'ятовуємо старі дані, якщо вони є в поточному стані
-    PrinterStatus? currentStatus;
-    if (state is PrinterLoaded) {
-      currentStatus = (state as PrinterLoaded).status;
-    } else if (state is PrinterLoading) {
-      currentStatus = (state as PrinterLoading).oldStatus;
-    }
-
-    // Емітимо завантаження, але зберігаємо старі дані на екрані
-    emit(PrinterLoading(oldStatus: currentStatus));
-    
-    final result = await _repository.getPrinterStatus();
-    
-    result.fold(
-      (failure) => emit(PrinterError('Не вдалося оновити дані', oldStatus: currentStatus)),
-      (status) => emit(PrinterLoaded(status)),
-    );
+  PrinterBloc({required this.getPrinterStatus}) : super(PrinterInitial()) {
+    on<FetchPrinterStatus>((event, emit) async {
+      emit(PrinterLoading());
+      final failureOrStatus = await getPrinterStatus(NoParams());
+      
+      failureOrStatus.fold(
+        (failure) => emit(PrinterError(message: failure.toString())),
+        (status) => emit(PrinterLoaded(status: status)),
+      );
+    });
   }
 }

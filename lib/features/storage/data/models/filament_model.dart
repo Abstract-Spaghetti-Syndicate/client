@@ -8,20 +8,26 @@ class FilamentModel extends FilamentEntity {
     required super.name,
     required super.material,
     required super.colorHex,
+    required super.diameter,
+    required super.peakExtruderTemp,
+    required super.peakBedTemp,
+    required super.density,
   });
 
-  // Конвертація з Drift структури в Entity
-  factory FilamentModel.fromDrift(FilamentTableData data) {
+  factory FilamentModel.fromDrift(FilamentData data) {
     return FilamentModel(
       id: data.id,
       vendorId: data.vendorId,
       name: data.name,
       material: data.material,
       colorHex: data.colorHex,
+      diameter: data.diameter,
+      peakExtruderTemp: data.peakExtruderTemp,
+      peakBedTemp: data.peakBedTemp,
+      density: data.density,
     );
   }
 
-  // Конвертація з JSON (від сервера) в Entity
   factory FilamentModel.fromJson(Map<String, dynamic> json) {
     return FilamentModel(
       id: json['id'] as String,
@@ -29,21 +35,27 @@ class FilamentModel extends FilamentEntity {
       name: json['name'] as String,
       material: json['material'] as String,
       colorHex: json['color_hex'] as String,
+      diameter: (json['diameter'] as num).toDouble(),
+      peakExtruderTemp: json['peak_extruder_temp'] as int,
+      peakBedTemp: json['peak_bed_temp'] as int,
+      density: (json['density'] as num).toDouble(),
     );
   }
 
-  // Конвертація Entity у рядок для збереження в Drift
-  FilamentTableData toDriftData() {
-    return FilamentTableData(
+  FilamentData toDriftData() {
+    return FilamentData(
       id: id,
       vendorId: vendorId,
       name: name,
       material: material,
       colorHex: colorHex,
+      diameter: diameter,
+      peakExtruderTemp: peakExtruderTemp,
+      peakBedTemp: peakBedTemp,
+      density: density,
     );
   }
 
-  // Конвертація в JSON для відправки на сервер
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -51,6 +63,10 @@ class FilamentModel extends FilamentEntity {
       'name': name,
       'material': material,
       'color_hex': colorHex,
+      'diameter': diameter,
+      'peak_extruder_temp': peakExtruderTemp,
+      'peak_bed_temp': peakBedTemp,
+      'density': density,
     };
   }
 }

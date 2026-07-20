@@ -9,35 +9,38 @@ dependencies:
   flutter:
     sdk: flutter
 
-  # State Management & DI
-  flutter_bloc: ^8.1.3
+  # Local Database (Drift + SQLite Core)
+  drift: ^2.20.0
+  sqlite3_flutter_libs: ^0.5.24
+  sqlite3: ^2.4.4
+  path_provider: ^2.1.3
+  path: ^1.9.0
+
+  # Dependency Injection
   get_it: ^7.6.0
+
+  # Architecture Tools (Clean Arc + BLoC)
+  dartz: ^0.10.1
   equatable: ^2.0.5
+  flutter_bloc: ^8.1.6
 
   # Network Layer
   dio: ^5.4.0
 
-  # Storage (Локальне сховище токенів)
+  # Storage (Локальне сховище токенів та сесій)
   flutter_secure_storage: ^9.0.0
 
+  # UI Components
   flutter_staggered_grid_view: ^0.7.0
-
-  dartz: ^0.10.1
-
-  drift: ^2.20.0
-  sqlite3_flutter_libs: ^0.5.24
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.0
 
+  # Code Generation
   drift_dev: ^2.20.0
   build_runner: ^2.4.0
 
-# ==========================================================================
-# КОРЕНЕВА СЕКЦІЯ FLUTTER (Має бути строго на початку рядка, без відступів!)
-# ==========================================================================
 flutter:
-  # Системний вказівник для збирача Windows/Linux бінарників
   uses-material-design: true

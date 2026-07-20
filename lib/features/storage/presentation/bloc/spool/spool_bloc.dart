@@ -1,24 +1,16 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:equatable/equatable.dart';
 import '../../../domain/repositories/spool_repository.dart';
-import 'spool_event.dart';
-import 'spool_state.dart';
 
-class FilamentTabBloc extends Bloc<FilamentTabEvent, FilamentTabState> {
-  final SpoolRepository _repository;
+part 'spool_event.dart';
+part 'spool_state.dart';
 
-  FilamentTabBloc(this._repository) : super(FilamentTabInitial()) {
-    on<FetchFilamentsTab>(_onFetchFilamentsTab);
-  }
+class SpoolBloc extends Bloc<SpoolEvent, SpoolState> {
+  final SpoolRepository spoolRepository;
 
-  Future<void> _onFetchFilamentsTab(
-    FetchFilamentsTab event,
-    Emitter<FilamentTabState> emit,
-  ) async {
-    emit(FilamentTabLoading());
-    final result = await _repository.getFilaments();
-    result.fold(
-      (failure) => emit(FilamentTabError(failure.message)),
-      (filaments) => emit(FilamentTabLoaded(filaments)),
-    );
+  SpoolBloc({required this.spoolRepository}) : super(SpoolInitial()) {
+    on<SpoolEvent>((event, emit) {
+      // Обробник для майбутніх подій
+    });
   }
 }

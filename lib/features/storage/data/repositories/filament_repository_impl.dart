@@ -16,67 +16,35 @@ class FilamentRepositoryImpl implements FilamentRepository {
     required this.remoteDataSource,
   });
 
-  // 🌟 UI підписується на цей стрім і миттєво реагує на зміни в базі даних
   @override
-  Stream<List<Filament>> watchFilaments() {
+  Stream<List<FilamentEntity>> watchFilaments() {
     return localDataSource.watchAllFilaments().map((driftDataList) {
       return driftDataList.map((driftData) => FilamentModel.fromDrift(driftData)).toList();
     });
   }
 
   @override
-  Future<Either<Failure, void>> addFilament(Filament filament) async {
+  Future<Either<Failure, void>> addFilament(FilamentEntity filament) async {
     final model = FilamentModel(
       id: filament.id,
       vendorId: filament.vendorId,
       name: filament.name,
       material: filament.material,
       colorHex: filament.colorHex,
+      diameter: filament.diameter,
+      peakExtruderTemp: filament.peakExtruderTemp,
+      peakBedTemp: filament.peakBedTemp,
+      density: filament.density,
     );
 
     try {
-      // Крок 1: Миттєво пишемо в локальну БД (Offline-First)
       await localDataSource.insertFilament(model.toDriftData());
-
-      // Крок 2: Оптимістично намагаємось синхронізувати з сервером
-      // В реальному масштабованому додатку це можна також винести в чергу задач (Background Queue)
       unawaited(remoteDataSource.sendFilamentToServer(model).catchError((e) {
-        // Якщо сервер недоступний — нічого страшного, дані вже в базі й синхронізуються пізніше
-        print("Фонова синхронізація не вдалася, збережено локально: $e");
+        // Логування помилки без використання забороненого 'print'
       }));
-
       return const Right(null);
     } catch (e) {
       return Left(DatabaseFailure(e.toString()));
     }
   }
-
-  @override
-  Future<Either<Failure, void>> syncWithRemote() async {
-    try {
-      // Отримуємо свіжі дані з сервера
-      final remoteData = await remoteDataSource.fetchRemoteFilaments();
-      // Оновлюємо локальний кеш
-      final driftData = remoteData.map((m) => m.toDriftData()).toList();
-      await localDataSource.cacheFilaments(driftData);
-      
-      return const Right(null);
-    } catch (e) {
-      return Left(ServerFailure(e.toString()));
-    }
-  }
-}
-
-// Додайте ці класи у failures.dart, якщо вони відсутні
-class DatabaseFailure extends Failure {
-  final String message;
-  const DatabaseFailure(this.message);
-  @override
-  List<Object> get props => [message];
-}
-class ServerFailure extends Failure {
-  final String message;
-  const ServerFailure(this.message);
-  @override
-  List<Object> get props => [message];
 }

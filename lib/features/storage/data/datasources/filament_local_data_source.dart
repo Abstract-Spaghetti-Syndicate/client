@@ -1,10 +1,10 @@
+import 'package:drift/drift.dart';
 import 'package:printer_client/core/database/app_database.dart';
-import '../models/filament_model.dart';
 
 abstract class FilamentLocalDataSource {
-  Stream<List<FilamentTableData>> watchAllFilaments();
-  Future<void> insertFilament(FilamentTableData tableData);
-  Future<void> cacheFilaments(List<FilamentTableData> filaments);
+  Stream<List<FilamentData>> watchAllFilaments();
+  Future<void> insertFilament(FilamentData tableData);
+  Future<void> cacheFilaments(List<FilamentData> filaments);
 }
 
 class FilamentLocalDataSourceImpl implements FilamentLocalDataSource {
@@ -13,17 +13,17 @@ class FilamentLocalDataSourceImpl implements FilamentLocalDataSource {
   FilamentLocalDataSourceImpl({required this.database});
 
   @override
-  Stream<List<FilamentTableData>> watchAllFilaments() {
+  Stream<List<FilamentData>> watchAllFilaments() {
     return database.select(database.filamentTables).watch();
   }
 
   @override
-  Future<void> insertFilament(FilamentTableData tableData) async {
+  Future<void> insertFilament(FilamentData tableData) async {
     await database.into(database.filamentTables).insertOnConflictUpdate(tableData);
   }
 
   @override
-  Future<void> cacheFilaments(List<FilamentTableData> filaments) async {
+  Future<void> cacheFilaments(List<FilamentData> filaments) async {
     await database.batch((batch) {
       batch.insertAll(
         database.filamentTables, 

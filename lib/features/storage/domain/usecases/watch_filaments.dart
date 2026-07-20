@@ -6,7 +6,7 @@ class WatchFilaments {
 
   WatchFilaments(this.repository);
 
-  Stream<List<Filament>> call() {
+  Stream<List<FilamentEntity>> call() {
     return repository.watchFilaments();
   }
 }

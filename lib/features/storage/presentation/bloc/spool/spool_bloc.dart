@@ -1,10 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../domain/repositories/filament_tab_repository.dart';
-import 'filament_tab_event.dart';
-import 'filament_tab_state.dart';
+import '../../../domain/repositories/spool_repository.dart';
+import 'spool_event.dart';
+import 'spool_state.dart';
 
 class FilamentTabBloc extends Bloc<FilamentTabEvent, FilamentTabState> {
-  final FilamentTabRepository _repository;
+  final SpoolRepository _repository;
 
   FilamentTabBloc(this._repository) : super(FilamentTabInitial()) {
     on<FetchFilamentsTab>(_onFetchFilamentsTab);

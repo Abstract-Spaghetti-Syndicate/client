@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import '../../../domain/entities/filament.dart';
+import '../../../domain/entities/filament_entity.dart';
 
 abstract class FilamentTabState extends Equatable {
   const FilamentTabState();

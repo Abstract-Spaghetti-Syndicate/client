@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import '../../../domain/entities/vendor.dart';
+import '../../../domain/entities/vendor_entity.dart';
 
 abstract class VendorState extends Equatable {
   const VendorState();

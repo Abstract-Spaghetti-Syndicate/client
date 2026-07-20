@@ -4,7 +4,7 @@ import '../../../../../core/di/injection_container.dart';
 import '../../bloc/filament/filament_bloc.dart';
 import '../../bloc/filament/filament_event.dart';
 import '../../bloc/filament/filament_state.dart';
-import '../../../domain/entities/spool.dart';
+import '../../../domain/entities/spool_entity.dart';
 
 class SpoolsTab extends StatelessWidget {
   const SpoolsTab({super.key});

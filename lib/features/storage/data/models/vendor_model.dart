@@ -1,4 +1,4 @@
-import '../../domain/entities/vendor.dart';
+import '../../domain/entities/vendor_entity.dart';
 
 class VendorModel extends Vendor {
   const VendorModel({

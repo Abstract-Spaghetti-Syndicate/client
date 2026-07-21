@@ -1,42 +1,20 @@
 import 'package:equatable/equatable.dart';
 
-class Spool extends Equatable {
-  final int id;
-  final String vendor;
-  final String name;
-  final String material;
-  final double initialWeight;
-  final double usedWeight;
-  final String? colorHex;
+class SpoolEntity extends Equatable {
+  final String id;
+  final String filamentId;
+  final double weightTotal;
+  final double weightUsed;
+  final String? locationId;
 
-  const Spool({
+  const SpoolEntity({
     required this.id,
-    required this.vendor,
-    required this.name,
-    required this.material,
-    required this.initialWeight,
-    required this.usedWeight,
-    this.colorHex,
+    required this.filamentId,
+    required this.weightTotal,
+    required this.weightUsed,
+    this.locationId,
   });
 
-  // Обчислювана властивість: скільки пластику залишилось
-  double get remainingWeight => initialWeight - usedWeight;
-
-  // Обчислювана властивість: відсоток залишку для прогрес-бару
-  double get remainingPercentage {
-    if (initialWeight <= 0) return 0.0;
-    final pct = (remainingWeight / initialWeight) * 100;
-    return pct.clamp(0.0, 100.0);
-  }
-
   @override
-  List<Object?> get props => [
-        id,
-        vendor,
-        name,
-        material,
-        initialWeight,
-        usedWeight,
-        colorHex,
-      ];
+  List<Object?> get props => [id, filamentId, weightTotal, weightUsed, locationId];
 }

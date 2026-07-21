@@ -6,7 +6,7 @@ import 'package:path/path.dart' as p;
 
 part 'app_database.g.dart';
 
-// 1. Таблиця Вендорів (Виробників)
+@DataClassName('VendorData') // 🌟 Явно вказуємо назву моделі
 class VendorTables extends Table {
   TextColumn get id => text()();
   TextColumn get name => text().withLength(min: 1, max: 100)();
@@ -15,25 +15,29 @@ class VendorTables extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-// 2. Таблиця Типів Пластику (Філаментів)
+@DataClassName('FilamentData') // 🌟 Тепер цей клас точно називатиметься FilamentData
 class FilamentTables extends Table {
   TextColumn get id => text()();
-  TextColumn get vendorId => text().customConstraint('REFERENCES vendor_tables(id) ON DELETE CASCADE')();
-  TextColumn get name => text()(); // Наприклад: "Premium PLA"
-  TextColumn get material => text()(); // PLA, PETG, ABS, ASA
-  TextColumn get colorHex => text()(); // Колір для UI (#FF0000)
+  TextColumn get vendorId => text().customConstraint('NOT NULL REFERENCES vendor_tables(id) ON DELETE CASCADE')();
+  TextColumn get name => text()();
+  TextColumn get material => text()();
+  TextColumn get colorHex => text()();
+  RealColumn get diameter => real().withDefault(const Constant(1.75))();
+  IntColumn get peakExtruderTemp => integer().withDefault(const Constant(210))();
+  IntColumn get peakBedTemp => integer().withDefault(const Constant(60))();
+  RealColumn get density => real().withDefault(const Constant(1.24))();
   
   @override
   Set<Column> get primaryKey => {id};
 }
 
-// 3. Таблиця конкретних Котушок
+@DataClassName('SpoolData') // 🌟 Явно вказуємо назву моделі
 class SpoolTables extends Table {
   TextColumn get id => text()();
-  TextColumn get filamentId => text().customConstraint('REFERENCES filament_tables(id) ON DELETE CASCADE')();
-  RealColumn get weightTotal => real()(); // Початкова вага (наприклад, 1000.0)
-  RealColumn get weightUsed => real()();  // Використано грам
-  TextColumn get locationId => text().nullable()(); // Де лежить (коробка, сушарка)
+  TextColumn get filamentId => text().customConstraint('NOT NULL REFERENCES filament_tables(id) ON DELETE CASCADE')();
+  RealColumn get weightTotal => real()();
+  RealColumn get weightUsed => real()();
+  TextColumn get locationId => text().nullable()();
   
   @override
   Set<Column> get primaryKey => {id};
@@ -44,7 +48,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 1; // Збільшувати при зміні структури (міграціях)
+  int get schemaVersion => 1;
 }
 
 LazyDatabase _openConnection() {

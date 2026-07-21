@@ -17,7 +17,7 @@ class PrinterRepositoryImpl implements PrinterRepository {
   Future<Either<Failure, PrinterStatus>> getPrinterStatus() async {
     try {
       // Витягуємо токен з локального сховища клієнта
-      final token = await _authLocalDataSource.getToken();
+      await _authLocalDataSource.getToken();
       
       // Робимо авторизований запит на правильний ендпоінт бекенду
       final response = await _dioClient.get(

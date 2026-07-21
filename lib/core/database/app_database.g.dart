@@ -4,7 +4,7 @@ part of 'app_database.dart';
 
 // ignore_for_file: type=lint
 class $VendorTablesTable extends VendorTables
-    with TableInfo<$VendorTablesTable, VendorTable> {
+    with TableInfo<$VendorTablesTable, VendorData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -30,7 +30,7 @@ class $VendorTablesTable extends VendorTables
   String get actualTableName => $name;
   static const String $name = 'vendor_tables';
   @override
-  VerificationContext validateIntegrity(Insertable<VendorTable> instance,
+  VerificationContext validateIntegrity(Insertable<VendorData> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -51,9 +51,9 @@ class $VendorTablesTable extends VendorTables
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  VendorTable map(Map<String, dynamic> data, {String? tablePrefix}) {
+  VendorData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return VendorTable(
+    return VendorData(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
       name: attachedDatabase.typeMapping
@@ -67,10 +67,10 @@ class $VendorTablesTable extends VendorTables
   }
 }
 
-class VendorTable extends DataClass implements Insertable<VendorTable> {
+class VendorData extends DataClass implements Insertable<VendorData> {
   final String id;
   final String name;
-  const VendorTable({required this.id, required this.name});
+  const VendorData({required this.id, required this.name});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -86,10 +86,10 @@ class VendorTable extends DataClass implements Insertable<VendorTable> {
     );
   }
 
-  factory VendorTable.fromJson(Map<String, dynamic> json,
+  factory VendorData.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return VendorTable(
+    return VendorData(
       id: serializer.fromJson<String>(json['id']),
       name: serializer.fromJson<String>(json['name']),
     );
@@ -103,12 +103,12 @@ class VendorTable extends DataClass implements Insertable<VendorTable> {
     };
   }
 
-  VendorTable copyWith({String? id, String? name}) => VendorTable(
+  VendorData copyWith({String? id, String? name}) => VendorData(
         id: id ?? this.id,
         name: name ?? this.name,
       );
-  VendorTable copyWithCompanion(VendorTablesCompanion data) {
-    return VendorTable(
+  VendorData copyWithCompanion(VendorTablesCompanion data) {
+    return VendorData(
       id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
     );
@@ -116,7 +116,7 @@ class VendorTable extends DataClass implements Insertable<VendorTable> {
 
   @override
   String toString() {
-    return (StringBuffer('VendorTable(')
+    return (StringBuffer('VendorData(')
           ..write('id: $id, ')
           ..write('name: $name')
           ..write(')'))
@@ -128,10 +128,10 @@ class VendorTable extends DataClass implements Insertable<VendorTable> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is VendorTable && other.id == this.id && other.name == this.name);
+      (other is VendorData && other.id == this.id && other.name == this.name);
 }
 
-class VendorTablesCompanion extends UpdateCompanion<VendorTable> {
+class VendorTablesCompanion extends UpdateCompanion<VendorData> {
   final Value<String> id;
   final Value<String> name;
   final Value<int> rowid;
@@ -146,7 +146,7 @@ class VendorTablesCompanion extends UpdateCompanion<VendorTable> {
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         name = Value(name);
-  static Insertable<VendorTable> custom({
+  static Insertable<VendorData> custom({
     Expression<String>? id,
     Expression<String>? name,
     Expression<int>? rowid,
@@ -194,7 +194,7 @@ class VendorTablesCompanion extends UpdateCompanion<VendorTable> {
 }
 
 class $FilamentTablesTable extends FilamentTables
-    with TableInfo<$FilamentTablesTable, FilamentTable> {
+    with TableInfo<$FilamentTablesTable, FilamentData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -211,7 +211,8 @@ class $FilamentTablesTable extends FilamentTables
       'vendor_id', aliasedName, false,
       type: DriftSqlType.string,
       requiredDuringInsert: true,
-      $customConstraints: 'REFERENCES vendor_tables(id) ON DELETE CASCADE');
+      $customConstraints:
+          'NOT NULL REFERENCES vendor_tables(id) ON DELETE CASCADE');
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
@@ -229,16 +230,57 @@ class $FilamentTablesTable extends FilamentTables
   late final GeneratedColumn<String> colorHex = GeneratedColumn<String>(
       'color_hex', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _diameterMeta =
+      const VerificationMeta('diameter');
   @override
-  List<GeneratedColumn> get $columns =>
-      [id, vendorId, name, material, colorHex];
+  late final GeneratedColumn<double> diameter = GeneratedColumn<double>(
+      'diameter', aliasedName, false,
+      type: DriftSqlType.double,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(1.75));
+  static const VerificationMeta _peakExtruderTempMeta =
+      const VerificationMeta('peakExtruderTemp');
+  @override
+  late final GeneratedColumn<int> peakExtruderTemp = GeneratedColumn<int>(
+      'peak_extruder_temp', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(210));
+  static const VerificationMeta _peakBedTempMeta =
+      const VerificationMeta('peakBedTemp');
+  @override
+  late final GeneratedColumn<int> peakBedTemp = GeneratedColumn<int>(
+      'peak_bed_temp', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(60));
+  static const VerificationMeta _densityMeta =
+      const VerificationMeta('density');
+  @override
+  late final GeneratedColumn<double> density = GeneratedColumn<double>(
+      'density', aliasedName, false,
+      type: DriftSqlType.double,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(1.24));
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        vendorId,
+        name,
+        material,
+        colorHex,
+        diameter,
+        peakExtruderTemp,
+        peakBedTemp,
+        density
+      ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
   static const String $name = 'filament_tables';
   @override
-  VerificationContext validateIntegrity(Insertable<FilamentTable> instance,
+  VerificationContext validateIntegrity(Insertable<FilamentData> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -271,15 +313,35 @@ class $FilamentTablesTable extends FilamentTables
     } else if (isInserting) {
       context.missing(_colorHexMeta);
     }
+    if (data.containsKey('diameter')) {
+      context.handle(_diameterMeta,
+          diameter.isAcceptableOrUnknown(data['diameter']!, _diameterMeta));
+    }
+    if (data.containsKey('peak_extruder_temp')) {
+      context.handle(
+          _peakExtruderTempMeta,
+          peakExtruderTemp.isAcceptableOrUnknown(
+              data['peak_extruder_temp']!, _peakExtruderTempMeta));
+    }
+    if (data.containsKey('peak_bed_temp')) {
+      context.handle(
+          _peakBedTempMeta,
+          peakBedTemp.isAcceptableOrUnknown(
+              data['peak_bed_temp']!, _peakBedTempMeta));
+    }
+    if (data.containsKey('density')) {
+      context.handle(_densityMeta,
+          density.isAcceptableOrUnknown(data['density']!, _densityMeta));
+    }
     return context;
   }
 
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  FilamentTable map(Map<String, dynamic> data, {String? tablePrefix}) {
+  FilamentData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return FilamentTable(
+    return FilamentData(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
       vendorId: attachedDatabase.typeMapping
@@ -290,6 +352,14 @@ class $FilamentTablesTable extends FilamentTables
           .read(DriftSqlType.string, data['${effectivePrefix}material'])!,
       colorHex: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}color_hex'])!,
+      diameter: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}diameter'])!,
+      peakExtruderTemp: attachedDatabase.typeMapping.read(
+          DriftSqlType.int, data['${effectivePrefix}peak_extruder_temp'])!,
+      peakBedTemp: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}peak_bed_temp'])!,
+      density: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}density'])!,
     );
   }
 
@@ -299,18 +369,26 @@ class $FilamentTablesTable extends FilamentTables
   }
 }
 
-class FilamentTable extends DataClass implements Insertable<FilamentTable> {
+class FilamentData extends DataClass implements Insertable<FilamentData> {
   final String id;
   final String vendorId;
   final String name;
   final String material;
   final String colorHex;
-  const FilamentTable(
+  final double diameter;
+  final int peakExtruderTemp;
+  final int peakBedTemp;
+  final double density;
+  const FilamentData(
       {required this.id,
       required this.vendorId,
       required this.name,
       required this.material,
-      required this.colorHex});
+      required this.colorHex,
+      required this.diameter,
+      required this.peakExtruderTemp,
+      required this.peakBedTemp,
+      required this.density});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -319,6 +397,10 @@ class FilamentTable extends DataClass implements Insertable<FilamentTable> {
     map['name'] = Variable<String>(name);
     map['material'] = Variable<String>(material);
     map['color_hex'] = Variable<String>(colorHex);
+    map['diameter'] = Variable<double>(diameter);
+    map['peak_extruder_temp'] = Variable<int>(peakExtruderTemp);
+    map['peak_bed_temp'] = Variable<int>(peakBedTemp);
+    map['density'] = Variable<double>(density);
     return map;
   }
 
@@ -329,18 +411,26 @@ class FilamentTable extends DataClass implements Insertable<FilamentTable> {
       name: Value(name),
       material: Value(material),
       colorHex: Value(colorHex),
+      diameter: Value(diameter),
+      peakExtruderTemp: Value(peakExtruderTemp),
+      peakBedTemp: Value(peakBedTemp),
+      density: Value(density),
     );
   }
 
-  factory FilamentTable.fromJson(Map<String, dynamic> json,
+  factory FilamentData.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return FilamentTable(
+    return FilamentData(
       id: serializer.fromJson<String>(json['id']),
       vendorId: serializer.fromJson<String>(json['vendorId']),
       name: serializer.fromJson<String>(json['name']),
       material: serializer.fromJson<String>(json['material']),
       colorHex: serializer.fromJson<String>(json['colorHex']),
+      diameter: serializer.fromJson<double>(json['diameter']),
+      peakExtruderTemp: serializer.fromJson<int>(json['peakExtruderTemp']),
+      peakBedTemp: serializer.fromJson<int>(json['peakBedTemp']),
+      density: serializer.fromJson<double>(json['density']),
     );
   }
   @override
@@ -352,63 +442,95 @@ class FilamentTable extends DataClass implements Insertable<FilamentTable> {
       'name': serializer.toJson<String>(name),
       'material': serializer.toJson<String>(material),
       'colorHex': serializer.toJson<String>(colorHex),
+      'diameter': serializer.toJson<double>(diameter),
+      'peakExtruderTemp': serializer.toJson<int>(peakExtruderTemp),
+      'peakBedTemp': serializer.toJson<int>(peakBedTemp),
+      'density': serializer.toJson<double>(density),
     };
   }
 
-  FilamentTable copyWith(
+  FilamentData copyWith(
           {String? id,
           String? vendorId,
           String? name,
           String? material,
-          String? colorHex}) =>
-      FilamentTable(
+          String? colorHex,
+          double? diameter,
+          int? peakExtruderTemp,
+          int? peakBedTemp,
+          double? density}) =>
+      FilamentData(
         id: id ?? this.id,
         vendorId: vendorId ?? this.vendorId,
         name: name ?? this.name,
         material: material ?? this.material,
         colorHex: colorHex ?? this.colorHex,
+        diameter: diameter ?? this.diameter,
+        peakExtruderTemp: peakExtruderTemp ?? this.peakExtruderTemp,
+        peakBedTemp: peakBedTemp ?? this.peakBedTemp,
+        density: density ?? this.density,
       );
-  FilamentTable copyWithCompanion(FilamentTablesCompanion data) {
-    return FilamentTable(
+  FilamentData copyWithCompanion(FilamentTablesCompanion data) {
+    return FilamentData(
       id: data.id.present ? data.id.value : this.id,
       vendorId: data.vendorId.present ? data.vendorId.value : this.vendorId,
       name: data.name.present ? data.name.value : this.name,
       material: data.material.present ? data.material.value : this.material,
       colorHex: data.colorHex.present ? data.colorHex.value : this.colorHex,
+      diameter: data.diameter.present ? data.diameter.value : this.diameter,
+      peakExtruderTemp: data.peakExtruderTemp.present
+          ? data.peakExtruderTemp.value
+          : this.peakExtruderTemp,
+      peakBedTemp:
+          data.peakBedTemp.present ? data.peakBedTemp.value : this.peakBedTemp,
+      density: data.density.present ? data.density.value : this.density,
     );
   }
 
   @override
   String toString() {
-    return (StringBuffer('FilamentTable(')
+    return (StringBuffer('FilamentData(')
           ..write('id: $id, ')
           ..write('vendorId: $vendorId, ')
           ..write('name: $name, ')
           ..write('material: $material, ')
-          ..write('colorHex: $colorHex')
+          ..write('colorHex: $colorHex, ')
+          ..write('diameter: $diameter, ')
+          ..write('peakExtruderTemp: $peakExtruderTemp, ')
+          ..write('peakBedTemp: $peakBedTemp, ')
+          ..write('density: $density')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, vendorId, name, material, colorHex);
+  int get hashCode => Object.hash(id, vendorId, name, material, colorHex,
+      diameter, peakExtruderTemp, peakBedTemp, density);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is FilamentTable &&
+      (other is FilamentData &&
           other.id == this.id &&
           other.vendorId == this.vendorId &&
           other.name == this.name &&
           other.material == this.material &&
-          other.colorHex == this.colorHex);
+          other.colorHex == this.colorHex &&
+          other.diameter == this.diameter &&
+          other.peakExtruderTemp == this.peakExtruderTemp &&
+          other.peakBedTemp == this.peakBedTemp &&
+          other.density == this.density);
 }
 
-class FilamentTablesCompanion extends UpdateCompanion<FilamentTable> {
+class FilamentTablesCompanion extends UpdateCompanion<FilamentData> {
   final Value<String> id;
   final Value<String> vendorId;
   final Value<String> name;
   final Value<String> material;
   final Value<String> colorHex;
+  final Value<double> diameter;
+  final Value<int> peakExtruderTemp;
+  final Value<int> peakBedTemp;
+  final Value<double> density;
   final Value<int> rowid;
   const FilamentTablesCompanion({
     this.id = const Value.absent(),
@@ -416,6 +538,10 @@ class FilamentTablesCompanion extends UpdateCompanion<FilamentTable> {
     this.name = const Value.absent(),
     this.material = const Value.absent(),
     this.colorHex = const Value.absent(),
+    this.diameter = const Value.absent(),
+    this.peakExtruderTemp = const Value.absent(),
+    this.peakBedTemp = const Value.absent(),
+    this.density = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   FilamentTablesCompanion.insert({
@@ -424,18 +550,26 @@ class FilamentTablesCompanion extends UpdateCompanion<FilamentTable> {
     required String name,
     required String material,
     required String colorHex,
+    this.diameter = const Value.absent(),
+    this.peakExtruderTemp = const Value.absent(),
+    this.peakBedTemp = const Value.absent(),
+    this.density = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         vendorId = Value(vendorId),
         name = Value(name),
         material = Value(material),
         colorHex = Value(colorHex);
-  static Insertable<FilamentTable> custom({
+  static Insertable<FilamentData> custom({
     Expression<String>? id,
     Expression<String>? vendorId,
     Expression<String>? name,
     Expression<String>? material,
     Expression<String>? colorHex,
+    Expression<double>? diameter,
+    Expression<int>? peakExtruderTemp,
+    Expression<int>? peakBedTemp,
+    Expression<double>? density,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -444,6 +578,10 @@ class FilamentTablesCompanion extends UpdateCompanion<FilamentTable> {
       if (name != null) 'name': name,
       if (material != null) 'material': material,
       if (colorHex != null) 'color_hex': colorHex,
+      if (diameter != null) 'diameter': diameter,
+      if (peakExtruderTemp != null) 'peak_extruder_temp': peakExtruderTemp,
+      if (peakBedTemp != null) 'peak_bed_temp': peakBedTemp,
+      if (density != null) 'density': density,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -454,6 +592,10 @@ class FilamentTablesCompanion extends UpdateCompanion<FilamentTable> {
       Value<String>? name,
       Value<String>? material,
       Value<String>? colorHex,
+      Value<double>? diameter,
+      Value<int>? peakExtruderTemp,
+      Value<int>? peakBedTemp,
+      Value<double>? density,
       Value<int>? rowid}) {
     return FilamentTablesCompanion(
       id: id ?? this.id,
@@ -461,6 +603,10 @@ class FilamentTablesCompanion extends UpdateCompanion<FilamentTable> {
       name: name ?? this.name,
       material: material ?? this.material,
       colorHex: colorHex ?? this.colorHex,
+      diameter: diameter ?? this.diameter,
+      peakExtruderTemp: peakExtruderTemp ?? this.peakExtruderTemp,
+      peakBedTemp: peakBedTemp ?? this.peakBedTemp,
+      density: density ?? this.density,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -483,6 +629,18 @@ class FilamentTablesCompanion extends UpdateCompanion<FilamentTable> {
     if (colorHex.present) {
       map['color_hex'] = Variable<String>(colorHex.value);
     }
+    if (diameter.present) {
+      map['diameter'] = Variable<double>(diameter.value);
+    }
+    if (peakExtruderTemp.present) {
+      map['peak_extruder_temp'] = Variable<int>(peakExtruderTemp.value);
+    }
+    if (peakBedTemp.present) {
+      map['peak_bed_temp'] = Variable<int>(peakBedTemp.value);
+    }
+    if (density.present) {
+      map['density'] = Variable<double>(density.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -497,6 +655,10 @@ class FilamentTablesCompanion extends UpdateCompanion<FilamentTable> {
           ..write('name: $name, ')
           ..write('material: $material, ')
           ..write('colorHex: $colorHex, ')
+          ..write('diameter: $diameter, ')
+          ..write('peakExtruderTemp: $peakExtruderTemp, ')
+          ..write('peakBedTemp: $peakBedTemp, ')
+          ..write('density: $density, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -504,7 +666,7 @@ class FilamentTablesCompanion extends UpdateCompanion<FilamentTable> {
 }
 
 class $SpoolTablesTable extends SpoolTables
-    with TableInfo<$SpoolTablesTable, SpoolTable> {
+    with TableInfo<$SpoolTablesTable, SpoolData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -521,7 +683,8 @@ class $SpoolTablesTable extends SpoolTables
       'filament_id', aliasedName, false,
       type: DriftSqlType.string,
       requiredDuringInsert: true,
-      $customConstraints: 'REFERENCES filament_tables(id) ON DELETE CASCADE');
+      $customConstraints:
+          'NOT NULL REFERENCES filament_tables(id) ON DELETE CASCADE');
   static const VerificationMeta _weightTotalMeta =
       const VerificationMeta('weightTotal');
   @override
@@ -549,7 +712,7 @@ class $SpoolTablesTable extends SpoolTables
   String get actualTableName => $name;
   static const String $name = 'spool_tables';
   @override
-  VerificationContext validateIntegrity(Insertable<SpoolTable> instance,
+  VerificationContext validateIntegrity(Insertable<SpoolData> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -594,9 +757,9 @@ class $SpoolTablesTable extends SpoolTables
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  SpoolTable map(Map<String, dynamic> data, {String? tablePrefix}) {
+  SpoolData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return SpoolTable(
+    return SpoolData(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
       filamentId: attachedDatabase.typeMapping
@@ -616,13 +779,13 @@ class $SpoolTablesTable extends SpoolTables
   }
 }
 
-class SpoolTable extends DataClass implements Insertable<SpoolTable> {
+class SpoolData extends DataClass implements Insertable<SpoolData> {
   final String id;
   final String filamentId;
   final double weightTotal;
   final double weightUsed;
   final String? locationId;
-  const SpoolTable(
+  const SpoolData(
       {required this.id,
       required this.filamentId,
       required this.weightTotal,
@@ -653,10 +816,10 @@ class SpoolTable extends DataClass implements Insertable<SpoolTable> {
     );
   }
 
-  factory SpoolTable.fromJson(Map<String, dynamic> json,
+  factory SpoolData.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return SpoolTable(
+    return SpoolData(
       id: serializer.fromJson<String>(json['id']),
       filamentId: serializer.fromJson<String>(json['filamentId']),
       weightTotal: serializer.fromJson<double>(json['weightTotal']),
@@ -676,21 +839,21 @@ class SpoolTable extends DataClass implements Insertable<SpoolTable> {
     };
   }
 
-  SpoolTable copyWith(
+  SpoolData copyWith(
           {String? id,
           String? filamentId,
           double? weightTotal,
           double? weightUsed,
           Value<String?> locationId = const Value.absent()}) =>
-      SpoolTable(
+      SpoolData(
         id: id ?? this.id,
         filamentId: filamentId ?? this.filamentId,
         weightTotal: weightTotal ?? this.weightTotal,
         weightUsed: weightUsed ?? this.weightUsed,
         locationId: locationId.present ? locationId.value : this.locationId,
       );
-  SpoolTable copyWithCompanion(SpoolTablesCompanion data) {
-    return SpoolTable(
+  SpoolData copyWithCompanion(SpoolTablesCompanion data) {
+    return SpoolData(
       id: data.id.present ? data.id.value : this.id,
       filamentId:
           data.filamentId.present ? data.filamentId.value : this.filamentId,
@@ -705,7 +868,7 @@ class SpoolTable extends DataClass implements Insertable<SpoolTable> {
 
   @override
   String toString() {
-    return (StringBuffer('SpoolTable(')
+    return (StringBuffer('SpoolData(')
           ..write('id: $id, ')
           ..write('filamentId: $filamentId, ')
           ..write('weightTotal: $weightTotal, ')
@@ -721,7 +884,7 @@ class SpoolTable extends DataClass implements Insertable<SpoolTable> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is SpoolTable &&
+      (other is SpoolData &&
           other.id == this.id &&
           other.filamentId == this.filamentId &&
           other.weightTotal == this.weightTotal &&
@@ -729,7 +892,7 @@ class SpoolTable extends DataClass implements Insertable<SpoolTable> {
           other.locationId == this.locationId);
 }
 
-class SpoolTablesCompanion extends UpdateCompanion<SpoolTable> {
+class SpoolTablesCompanion extends UpdateCompanion<SpoolData> {
   final Value<String> id;
   final Value<String> filamentId;
   final Value<double> weightTotal;
@@ -755,7 +918,7 @@ class SpoolTablesCompanion extends UpdateCompanion<SpoolTable> {
         filamentId = Value(filamentId),
         weightTotal = Value(weightTotal),
         weightUsed = Value(weightUsed);
-  static Insertable<SpoolTable> custom({
+  static Insertable<SpoolData> custom({
     Expression<String>? id,
     Expression<String>? filamentId,
     Expression<double>? weightTotal,
@@ -875,13 +1038,14 @@ typedef $$VendorTablesTableUpdateCompanionBuilder = VendorTablesCompanion
 });
 
 final class $$VendorTablesTableReferences
-    extends BaseReferences<_$AppDatabase, $VendorTablesTable, VendorTable> {
+    extends BaseReferences<_$AppDatabase, $VendorTablesTable, VendorData> {
   $$VendorTablesTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
-  static MultiTypedResultKey<$FilamentTablesTable, List<FilamentTable>>
+  static MultiTypedResultKey<$FilamentTablesTable, List<FilamentData>>
       _filamentTablesRefsTable(_$AppDatabase db) =>
           MultiTypedResultKey.fromTable(db.filamentTables,
-              aliasName: 'vendor_tables__id__filament_tables__vendor_id');
+              aliasName: $_aliasNameGenerator(
+                  db.vendorTables.id, db.filamentTables.vendorId));
 
   $$FilamentTablesTableProcessedTableManager get filamentTablesRefs {
     final manager = $$FilamentTablesTableTableManager($_db, $_db.filamentTables)
@@ -986,14 +1150,14 @@ class $$VendorTablesTableAnnotationComposer
 class $$VendorTablesTableTableManager extends RootTableManager<
     _$AppDatabase,
     $VendorTablesTable,
-    VendorTable,
+    VendorData,
     $$VendorTablesTableFilterComposer,
     $$VendorTablesTableOrderingComposer,
     $$VendorTablesTableAnnotationComposer,
     $$VendorTablesTableCreateCompanionBuilder,
     $$VendorTablesTableUpdateCompanionBuilder,
-    (VendorTable, $$VendorTablesTableReferences),
-    VendorTable,
+    (VendorData, $$VendorTablesTableReferences),
+    VendorData,
     PrefetchHooks Function({bool filamentTablesRefs})> {
   $$VendorTablesTableTableManager(_$AppDatabase db, $VendorTablesTable table)
       : super(TableManagerState(
@@ -1041,8 +1205,8 @@ class $$VendorTablesTableTableManager extends RootTableManager<
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (filamentTablesRefs)
-                    await $_getPrefetchedData<VendorTable, $VendorTablesTable,
-                            FilamentTable>(
+                    await $_getPrefetchedData<VendorData, $VendorTablesTable,
+                            FilamentData>(
                         currentTable: table,
                         referencedTable: $$VendorTablesTableReferences
                             ._filamentTablesRefsTable(db),
@@ -1063,14 +1227,14 @@ class $$VendorTablesTableTableManager extends RootTableManager<
 typedef $$VendorTablesTableProcessedTableManager = ProcessedTableManager<
     _$AppDatabase,
     $VendorTablesTable,
-    VendorTable,
+    VendorData,
     $$VendorTablesTableFilterComposer,
     $$VendorTablesTableOrderingComposer,
     $$VendorTablesTableAnnotationComposer,
     $$VendorTablesTableCreateCompanionBuilder,
     $$VendorTablesTableUpdateCompanionBuilder,
-    (VendorTable, $$VendorTablesTableReferences),
-    VendorTable,
+    (VendorData, $$VendorTablesTableReferences),
+    VendorData,
     PrefetchHooks Function({bool filamentTablesRefs})>;
 typedef $$FilamentTablesTableCreateCompanionBuilder = FilamentTablesCompanion
     Function({
@@ -1079,6 +1243,10 @@ typedef $$FilamentTablesTableCreateCompanionBuilder = FilamentTablesCompanion
   required String name,
   required String material,
   required String colorHex,
+  Value<double> diameter,
+  Value<int> peakExtruderTemp,
+  Value<int> peakBedTemp,
+  Value<double> density,
   Value<int> rowid,
 });
 typedef $$FilamentTablesTableUpdateCompanionBuilder = FilamentTablesCompanion
@@ -1088,16 +1256,21 @@ typedef $$FilamentTablesTableUpdateCompanionBuilder = FilamentTablesCompanion
   Value<String> name,
   Value<String> material,
   Value<String> colorHex,
+  Value<double> diameter,
+  Value<int> peakExtruderTemp,
+  Value<int> peakBedTemp,
+  Value<double> density,
   Value<int> rowid,
 });
 
 final class $$FilamentTablesTableReferences
-    extends BaseReferences<_$AppDatabase, $FilamentTablesTable, FilamentTable> {
+    extends BaseReferences<_$AppDatabase, $FilamentTablesTable, FilamentData> {
   $$FilamentTablesTableReferences(
       super.$_db, super.$_table, super.$_typedResult);
 
-  static $VendorTablesTable _vendorIdTable(_$AppDatabase db) => db.vendorTables
-      .createAlias('filament_tables__vendor_id__vendor_tables__id');
+  static $VendorTablesTable _vendorIdTable(_$AppDatabase db) =>
+      db.vendorTables.createAlias(
+          $_aliasNameGenerator(db.filamentTables.vendorId, db.vendorTables.id));
 
   $$VendorTablesTableProcessedTableManager get vendorId {
     final $_column = $_itemColumn<String>('vendor_id')!;
@@ -1110,10 +1283,11 @@ final class $$FilamentTablesTableReferences
         manager.$state.copyWith(prefetchedData: [item]));
   }
 
-  static MultiTypedResultKey<$SpoolTablesTable, List<SpoolTable>>
+  static MultiTypedResultKey<$SpoolTablesTable, List<SpoolData>>
       _spoolTablesRefsTable(_$AppDatabase db) =>
           MultiTypedResultKey.fromTable(db.spoolTables,
-              aliasName: 'filament_tables__id__spool_tables__filament_id');
+              aliasName: $_aliasNameGenerator(
+                  db.filamentTables.id, db.spoolTables.filamentId));
 
   $$SpoolTablesTableProcessedTableManager get spoolTablesRefs {
     final manager = $$SpoolTablesTableTableManager($_db, $_db.spoolTables)
@@ -1145,6 +1319,19 @@ class $$FilamentTablesTableFilterComposer
 
   ColumnFilters<String> get colorHex => $composableBuilder(
       column: $table.colorHex, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<double> get diameter => $composableBuilder(
+      column: $table.diameter, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get peakExtruderTemp => $composableBuilder(
+      column: $table.peakExtruderTemp,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get peakBedTemp => $composableBuilder(
+      column: $table.peakBedTemp, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<double> get density => $composableBuilder(
+      column: $table.density, builder: (column) => ColumnFilters(column));
 
   $$VendorTablesTableFilterComposer get vendorId {
     final $$VendorTablesTableFilterComposer composer = $composerBuilder(
@@ -1209,6 +1396,19 @@ class $$FilamentTablesTableOrderingComposer
   ColumnOrderings<String> get colorHex => $composableBuilder(
       column: $table.colorHex, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<double> get diameter => $composableBuilder(
+      column: $table.diameter, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get peakExtruderTemp => $composableBuilder(
+      column: $table.peakExtruderTemp,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get peakBedTemp => $composableBuilder(
+      column: $table.peakBedTemp, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<double> get density => $composableBuilder(
+      column: $table.density, builder: (column) => ColumnOrderings(column));
+
   $$VendorTablesTableOrderingComposer get vendorId {
     final $$VendorTablesTableOrderingComposer composer = $composerBuilder(
         composer: this,
@@ -1250,6 +1450,18 @@ class $$FilamentTablesTableAnnotationComposer
 
   GeneratedColumn<String> get colorHex =>
       $composableBuilder(column: $table.colorHex, builder: (column) => column);
+
+  GeneratedColumn<double> get diameter =>
+      $composableBuilder(column: $table.diameter, builder: (column) => column);
+
+  GeneratedColumn<int> get peakExtruderTemp => $composableBuilder(
+      column: $table.peakExtruderTemp, builder: (column) => column);
+
+  GeneratedColumn<int> get peakBedTemp => $composableBuilder(
+      column: $table.peakBedTemp, builder: (column) => column);
+
+  GeneratedColumn<double> get density =>
+      $composableBuilder(column: $table.density, builder: (column) => column);
 
   $$VendorTablesTableAnnotationComposer get vendorId {
     final $$VendorTablesTableAnnotationComposer composer = $composerBuilder(
@@ -1296,14 +1508,14 @@ class $$FilamentTablesTableAnnotationComposer
 class $$FilamentTablesTableTableManager extends RootTableManager<
     _$AppDatabase,
     $FilamentTablesTable,
-    FilamentTable,
+    FilamentData,
     $$FilamentTablesTableFilterComposer,
     $$FilamentTablesTableOrderingComposer,
     $$FilamentTablesTableAnnotationComposer,
     $$FilamentTablesTableCreateCompanionBuilder,
     $$FilamentTablesTableUpdateCompanionBuilder,
-    (FilamentTable, $$FilamentTablesTableReferences),
-    FilamentTable,
+    (FilamentData, $$FilamentTablesTableReferences),
+    FilamentData,
     PrefetchHooks Function({bool vendorId, bool spoolTablesRefs})> {
   $$FilamentTablesTableTableManager(
       _$AppDatabase db, $FilamentTablesTable table)
@@ -1322,6 +1534,10 @@ class $$FilamentTablesTableTableManager extends RootTableManager<
             Value<String> name = const Value.absent(),
             Value<String> material = const Value.absent(),
             Value<String> colorHex = const Value.absent(),
+            Value<double> diameter = const Value.absent(),
+            Value<int> peakExtruderTemp = const Value.absent(),
+            Value<int> peakBedTemp = const Value.absent(),
+            Value<double> density = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               FilamentTablesCompanion(
@@ -1330,6 +1546,10 @@ class $$FilamentTablesTableTableManager extends RootTableManager<
             name: name,
             material: material,
             colorHex: colorHex,
+            diameter: diameter,
+            peakExtruderTemp: peakExtruderTemp,
+            peakBedTemp: peakBedTemp,
+            density: density,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -1338,6 +1558,10 @@ class $$FilamentTablesTableTableManager extends RootTableManager<
             required String name,
             required String material,
             required String colorHex,
+            Value<double> diameter = const Value.absent(),
+            Value<int> peakExtruderTemp = const Value.absent(),
+            Value<int> peakBedTemp = const Value.absent(),
+            Value<double> density = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               FilamentTablesCompanion.insert(
@@ -1346,6 +1570,10 @@ class $$FilamentTablesTableTableManager extends RootTableManager<
             name: name,
             material: material,
             colorHex: colorHex,
+            diameter: diameter,
+            peakExtruderTemp: peakExtruderTemp,
+            peakBedTemp: peakBedTemp,
+            density: density,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0
@@ -1387,8 +1615,8 @@ class $$FilamentTablesTableTableManager extends RootTableManager<
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (spoolTablesRefs)
-                    await $_getPrefetchedData<FilamentTable,
-                            $FilamentTablesTable, SpoolTable>(
+                    await $_getPrefetchedData<FilamentData,
+                            $FilamentTablesTable, SpoolData>(
                         currentTable: table,
                         referencedTable: $$FilamentTablesTableReferences
                             ._spoolTablesRefsTable(db),
@@ -1409,14 +1637,14 @@ class $$FilamentTablesTableTableManager extends RootTableManager<
 typedef $$FilamentTablesTableProcessedTableManager = ProcessedTableManager<
     _$AppDatabase,
     $FilamentTablesTable,
-    FilamentTable,
+    FilamentData,
     $$FilamentTablesTableFilterComposer,
     $$FilamentTablesTableOrderingComposer,
     $$FilamentTablesTableAnnotationComposer,
     $$FilamentTablesTableCreateCompanionBuilder,
     $$FilamentTablesTableUpdateCompanionBuilder,
-    (FilamentTable, $$FilamentTablesTableReferences),
-    FilamentTable,
+    (FilamentData, $$FilamentTablesTableReferences),
+    FilamentData,
     PrefetchHooks Function({bool vendorId, bool spoolTablesRefs})>;
 typedef $$SpoolTablesTableCreateCompanionBuilder = SpoolTablesCompanion
     Function({
@@ -1438,12 +1666,12 @@ typedef $$SpoolTablesTableUpdateCompanionBuilder = SpoolTablesCompanion
 });
 
 final class $$SpoolTablesTableReferences
-    extends BaseReferences<_$AppDatabase, $SpoolTablesTable, SpoolTable> {
+    extends BaseReferences<_$AppDatabase, $SpoolTablesTable, SpoolData> {
   $$SpoolTablesTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
   static $FilamentTablesTable _filamentIdTable(_$AppDatabase db) =>
-      db.filamentTables
-          .createAlias('spool_tables__filament_id__filament_tables__id');
+      db.filamentTables.createAlias($_aliasNameGenerator(
+          db.spoolTables.filamentId, db.filamentTables.id));
 
   $$FilamentTablesTableProcessedTableManager get filamentId {
     final $_column = $_itemColumn<String>('filament_id')!;
@@ -1586,14 +1814,14 @@ class $$SpoolTablesTableAnnotationComposer
 class $$SpoolTablesTableTableManager extends RootTableManager<
     _$AppDatabase,
     $SpoolTablesTable,
-    SpoolTable,
+    SpoolData,
     $$SpoolTablesTableFilterComposer,
     $$SpoolTablesTableOrderingComposer,
     $$SpoolTablesTableAnnotationComposer,
     $$SpoolTablesTableCreateCompanionBuilder,
     $$SpoolTablesTableUpdateCompanionBuilder,
-    (SpoolTable, $$SpoolTablesTableReferences),
-    SpoolTable,
+    (SpoolData, $$SpoolTablesTableReferences),
+    SpoolData,
     PrefetchHooks Function({bool filamentId})> {
   $$SpoolTablesTableTableManager(_$AppDatabase db, $SpoolTablesTable table)
       : super(TableManagerState(
@@ -1684,14 +1912,14 @@ class $$SpoolTablesTableTableManager extends RootTableManager<
 typedef $$SpoolTablesTableProcessedTableManager = ProcessedTableManager<
     _$AppDatabase,
     $SpoolTablesTable,
-    SpoolTable,
+    SpoolData,
     $$SpoolTablesTableFilterComposer,
     $$SpoolTablesTableOrderingComposer,
     $$SpoolTablesTableAnnotationComposer,
     $$SpoolTablesTableCreateCompanionBuilder,
     $$SpoolTablesTableUpdateCompanionBuilder,
-    (SpoolTable, $$SpoolTablesTableReferences),
-    SpoolTable,
+    (SpoolData, $$SpoolTablesTableReferences),
+    SpoolData,
     PrefetchHooks Function({bool filamentId})>;
 
 class $AppDatabaseManager {

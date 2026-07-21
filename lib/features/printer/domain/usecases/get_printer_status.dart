@@ -11,7 +11,8 @@ class GetPrinterStatus implements UseCase<PrinterStatus, NoParams> {
   GetPrinterStatus(this.repository);
 
   @override
-  Future<Either<Failure, PrinterStatus>> call(NoParams params) async {
-    return await repository.getPrinterStatus();
+  Future<Either<Failure, Type>> call(NoParams params) {
+    // Cast to match UseCase signature which uses the generic name `Type`.
+    return repository.getPrinterStatus() as Future<Either<Failure, Type>>;
   }
 }

@@ -7,17 +7,15 @@ import 'package:printer_client/features/auth/presentation/bloc/auth_event.dart';
 import 'package:printer_client/features/auth/presentation/bloc/auth_state.dart';
 
 // Імпорти сторінок залишаються тут, але згодом будуть винесені в Router-делегат
-import 'package:printer_client/features/auth/presentation/pages/splash_page.dart';
 import 'package:printer_client/features/auth/presentation/pages/login_page.dart';
 import 'package:printer_client/features/printer/presentation/pages/dashboard_page.dart';
 
 void main() async {
-  // Гарантуємо стабільність зв'язку з нативним шаром ОС перед ініціалізацією DI
   WidgetsFlutterBinding.ensureInitialized();
   
-  // Запуск архітектурного конвеєра
-  await di.initDependencies();
-
+  // 🌟 ВИПРАВЛЕНО: Викликаємо di.init() замість initDependencies()
+  await di.init(); 
+  
   runApp(const FilamentaryApp());
 }
 

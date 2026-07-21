@@ -8,19 +8,10 @@ class AddFilament {
 
   AddFilament(this.repository);
 
-  Future<Either<Failure, void>> call(Filament filament) async {
-    // Тут за потреби можна додати валідацію бізнес-правил
+  Future<Either<Failure, void>> call(FilamentEntity filament) async {
     if (filament.name.isEmpty) {
-      return Left(ValidationFailure('Назва пластику не може бути порожньою'));
+      return const Left(ValidationFailure('Назва пластику порожня'));
     }
     return await repository.addFilament(filament);
   }
-}
-
-// Додайте цей клас у ваші failures, якщо його немає: lib/core/error/failures.dart
-class ValidationFailure extends Failure {
-  final String message;
-  const ValidationFailure(this.message);
-  @override
-  List<Object> get props => [message];
 }

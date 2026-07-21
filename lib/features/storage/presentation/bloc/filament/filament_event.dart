@@ -1,4 +1,4 @@
-import 'package:equatable/equatable.dart';
+part of 'filament_bloc.dart'; // 🌟 ЗВ'ЯЗОК З БЛОКОМ
 
 abstract class FilamentEvent extends Equatable {
   const FilamentEvent();
@@ -7,5 +7,12 @@ abstract class FilamentEvent extends Equatable {
   List<Object> get props => [];
 }
 
-// Подія для запиту списку котушок
-class FetchFilaments extends FilamentEvent {}
+class SubscriptionRequested extends FilamentEvent {}
+
+class FilamentAdded extends FilamentEvent {
+  final FilamentEntity filament;
+  const FilamentAdded(this.filament);
+
+  @override
+  List<Object> get props => [filament];
+}

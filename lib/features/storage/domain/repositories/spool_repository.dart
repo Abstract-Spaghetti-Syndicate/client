@@ -1,7 +1,8 @@
 import 'package:dartz/dartz.dart';
-import '../../../../core/error/failures.dart';
-import '../entities/filament_entity.dart';
+import 'package:printer_client/core/error/failures.dart';
+import '../entities/spool_entity.dart';
 
 abstract class SpoolRepository {
-  Future<Either<Failure, List<FilamentEntity>>> getFilaments();
+  Stream<List<SpoolEntity>> watchSpools();
+  Future<Either<Failure, void>> addSpool(SpoolEntity spool);
 }

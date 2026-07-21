@@ -1,9 +1,8 @@
-import 'package:equatable/equatable.dart';
+part of 'spool_bloc.dart';
 
-abstract class FilamentTabEvent extends Equatable {
-  const FilamentTabEvent();
+abstract class SpoolEvent extends Equatable {
+  const SpoolEvent();
+
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
-
-class FetchFilamentsTab extends FilamentTabEvent {}
